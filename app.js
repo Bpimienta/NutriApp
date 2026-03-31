@@ -171,8 +171,27 @@ function deleteUserRecipe(nombre) {
 function showLibraryRecipe(n) { 
     closeModal('library-modal'); 
     let d = RECETAS_BASE[n] || recetasExternas.find(r => r.nombre === n);
-    document.getElementById("recipe-detail").innerHTML = `<h3>${n}</h3>` + (d.isExternal ? `<a href="${d.url}" target="_blank" class="btn-link">📺 Ver Video</a>` : `<p>${d.instrucciones}</p>`);
+    let html = `<h3>${n}</h3>`;
+    html += d.isExternal ? `<a href="${d.url}" target="_blank" class="btn-link">📺 Ver Video</a>` : `<p>${d.instrucciones}</p>`;
+    // BOTÓN MÁGICO PARA APLICAR AL MENÚ DE HOY
+    html += `<button onclick="aplicarAlMenu('${n}')" style="margin-top:20px; background:var(--primary); color:white;">🍽️ Usar en el menú de hoy</button>`;
+    
+    document.getElementById("recipe-detail").innerHTML = html;
     document.getElementById("recipe-modal").style.display = "flex"; 
+}
+
+function aplicarAlMenu(nombreReceta) { 
+    const hoy = days[(new Date().getDay() + 6) % 7];
+    let d = RECETAS_BASE[nombreReceta] || recetasExternas.find(r => r.nombre === nombreReceta);
+    
+    menu[hoy].cena = nombreReceta;
+    menu[hoy].isExternal = !!d.isExternal;
+    menu[hoy].url = d.url || null;
+    menu[hoy].ingredients = [...(d.ingredients || []).map(i => ({...i, qty: 2})), {ing: "Fruta", qty: 1, unit: "u"}];
+    
+    saveAndRender(); 
+    closeModal('recipe-modal');
+    alert(`¡Listo! Hoy cenás ${nombreReceta}.`);
 }
 
 function renderInfoList() {
@@ -192,8 +211,6 @@ function buscarRecetaPorIngrediente() {
     res.style.display = "block";
 }
 
-function aplicarAlMenu(ing) { const hoy = days[(new Date().getDay() + 6) % 7]; menu[hoy].cena = `Especial de ${ing}`; saveAndRender(); }
-
 function mostrarConsejoDelDia() { document.getElementById("daily-tip-text").innerText = CONSEJOS_DIARIOS[(new Date().getDate() - 1) % 31]; }
 
 function generateShoppingList() {
@@ -203,7 +220,8 @@ function generateShoppingList() {
 }
 
 function updateReminders() { 
-    const r = menu[days[(new Date().getDay() + 6) % 7]]?.remojo; 
+    const hoy = days[(new Date().getDay() + 6) % 7];
+    const r = menu[hoy]?.remojo; 
     document.getElementById("reminders-section").style.display = r ? "block" : "none";
     document.getElementById("daily-reminder").innerText = r || "";
 }
