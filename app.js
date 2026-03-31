@@ -1,13 +1,11 @@
 const days = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
 const FRUTAS = ["Manzana", "Pera", "Banana", "Mandarina", "Arándanos"];
 
-// --- 🛡️ MOTOR DE PERSISTENCIA (Esto evita que se borren tus datos) ---
-// Intentamos recuperar; si no existe, inicializamos como array/objeto vacío
+// --- 🛡️ MOTOR DE PERSISTENCIA ---
 let menu = JSON.parse(localStorage.getItem("menu")) || {};
 let recetasExternas = JSON.parse(localStorage.getItem("recetasExternas")) || [];
 let infoHemeroteca = JSON.parse(localStorage.getItem("infoHemeroteca")) || [];
 
-// --- 💡 BASE DE DATOS FIJA (CONSEJOS) ---
 const CONSEJOS_DIARIOS = [
     "Hibiscus: Antioxidante potente, ideal para la presión.",
     "Regla 80/20: Come hasta estar 80% lleno.",
@@ -42,8 +40,7 @@ const CONSEJOS_DIARIOS = [
     "Gratitud: Comer relajado mejora la absorción."
 ];
 
-// --- 🍳 RECETARIO EXPERTO (ESTO ES EL CÓDIGO, NO SE BORRA) ---
-const RECETAS_EXPERT = {
+const RECETAS_BASE = {
     "Guiso de Lentejas Turcas": { ingredients: [{ing: "lentejas turcas", qty: 200, unit: "g"}, {ing: "zapallo", qty: 400, unit: "g"}], remojo: "lentejas", instrucciones: "Cocinar 15 min con cúrcuma.", beneficio: "Hierro." },
     "Nuggets de Pollo y Avena": { ingredients: [{ing: "pechuga", qty: 400, unit: "g"}, {ing: "avena", qty: 100, unit: "g"}], instrucciones: "Empanar y hornear.", beneficio: "Proteína." },
     "Tacos de Lechuga": { ingredients: [{ing: "pollo", qty: 400, unit: "g"}, {ing: "palta", qty: 1, unit: "u"}], instrucciones: "Usar lechuga como wrap.", beneficio: "Sin harinas." },
@@ -64,36 +61,26 @@ const DESAYUNOS_EXPERT = {
     "Porridge de Avena": { ingredients: [{ing: "avena", qty: 4, unit: "cdas"}], instrucciones: "Cocinar con agua o leche." }
 };
 
-const SUGERENCIAS_INGREDIENTES = {
-    "trigo burgol": "🥣 **Tabulé:** Hidratá el trigo burgol, sumá mucho perejil, tomate y limón. ¡Cena fresca!",
-    "arroz": "🍚 **Arroz Primavera:** Salteá vegetales y sumá arroz cocido frío con un huevo.",
-    "huevo": "🥚 **Shakshuka:** Huevos cocidos en salsa de tomate especiada. ¡Rápido y nutritivo!",
-    "atun": "🐟 **Mousse de Atún:** Mezclá atún con palta pisada y usalo sobre hojas de lechuga.",
-    "garbanzos": "🥙 **Snack Crujiente:** Horneá garbanzos cocidos con especias hasta que doren.",
-    "pollo": "🍗 **Wok de Pollo:** Salteado rápido con zapallitos y cebolla."
-};
-
-// --- 🏗️ FUNCIONES DE LÓGICA ---
-
 function generateSmartMenu() {
     const mult = document.getElementById("servings-selector").value / 2;
-    let poolCenas = [...Object.keys(RECETAS_EXPERT), ...recetasExternas.map(r => r.nombre)];
+    let poolCenas = [...Object.keys(RECETAS_BASE), ...recetasExternas.map(r => r.nombre)];
     
     days.forEach(day => {
-        const cena = poolCenas.splice(Math.floor(Math.random() * poolCenas.length), 1)[0] || "Sopa de Arvejas";
+        if (poolCenas.length === 0) poolCenas = [...Object.keys(RECETAS_BASE), ...recetasExternas.map(r => r.nombre)];
+        const cenaNombre = poolCenas.splice(Math.floor(Math.random() * poolCenas.length), 1)[0];
         const desBase = Object.keys(DESAYUNOS_EXPERT)[Math.floor(Math.random() * 3)];
         const fruta = FRUTAS[Math.floor(Math.random() * FRUTAS.length)];
-        let d = RECETAS_EXPERT[cena] || recetasExternas.find(r => r.nombre === cena);
+        
+        let d = RECETAS_BASE[cenaNombre] || recetasExternas.find(r => r.nombre === cenaNombre);
         
         menu[day] = { 
             desayuno: desBase.replace("[FRUTA]", fruta), 
-            cena: cena, 
+            cena: cenaNombre, 
             isExternal: !!d.isExternal, 
-            url: d.url, 
-            remojo: d.remojo, 
+            url: d.url || null, 
+            remojo: d.remojo || null, 
             ingredients: [
                 ...(d.ingredients || []).map(i => ({...i, qty: i.qty * mult})), 
-                {ing: "Huevo/Avena", qty: 1, unit: "u"}, 
                 {ing: fruta, qty: 1, unit: "u"}
             ] 
         };
@@ -116,136 +103,113 @@ function renderAll() {
             return `<div class="day-card" onclick="showRecipe('${day}')"><h3>${day}</h3><p>☀️ ${d.desayuno}</p><p>🌙 ${d.cena}</p></div>`;
         }).join("");
     }
-    mostrarConsejoDelDia(); 
-    renderInfoList(); 
-    generateShoppingList(); 
-    updateReminders();
+    mostrarConsejoDelDia(); renderInfoList(); generateShoppingList(); updateReminders();
 }
 
 function showRecipe(day) {
     const d = menu[day];
     if (!d) return;
-    let cenaHtml = d.isExternal ? `<a href="${d.url}" target="_blank" class="btn-link">📺 Ver Video</a>` : `<p>${RECETAS_EXPERT[d.cena]?.instrucciones || 'Receta personalizada.'}</p>`;
-    document.getElementById("recipe-detail").innerHTML = `<h3>☀️ Desayuno</h3><p>${d.desayuno}</p><hr><h3>🌙 ${d.cena}</h3>${cenaHtml}<button onclick="changeSingleMeal('${day}')">🎲 Cambiar Día</button>`;
+    let cenaHtml = d.isExternal ? `<a href="${d.url}" target="_blank" class="btn-link">📺 Ver Video Tutorial</a>` : `<p>${RECETAS_BASE[d.cena]?.instrucciones || ''}</p>`;
+    document.getElementById("recipe-detail").innerHTML = `<h3>☀️ Desayuno</h3><p>${d.desayuno}</p><hr><h3>🌙 ${d.cena}</h3>${cenaHtml}<button onclick="changeSingleMeal('${day}')" style="margin-top:10px;">🎲 Cambiar Día</button>`;
     document.getElementById("recipe-modal").style.display = "flex";
 }
 
 function changeSingleMeal(day) {
-    // Generar solo un día nuevo sin borrar el resto
-    let poolCenas = [...Object.keys(RECETAS_EXPERT), ...recetasExternas.map(r => r.nombre)];
+    let poolCenas = [...Object.keys(RECETAS_BASE), ...recetasExternas.map(r => r.nombre)];
     const cena = poolCenas[Math.floor(Math.random() * poolCenas.length)];
-    const desBase = Object.keys(DESAYUNOS_EXPERT)[Math.floor(Math.random() * 3)];
-    const fruta = FRUTAS[Math.floor(Math.random() * FRUTAS.length)];
-    let d = RECETAS_EXPERT[cena] || recetasExternas.find(r => r.nombre === cena);
-    
-    menu[day] = { 
-        desayuno: desBase.replace("[FRUTA]", fruta), 
-        cena: cena, 
-        isExternal: !!d.isExternal, 
-        url: d.url, 
-        remojo: d.remojo, 
-        ingredients: [
-            ...(d.ingredients || []).map(i => ({...i, qty: 2})), 
-            {ing: fruta, qty: 1, unit: "u"}
-        ] 
-    };
-    saveAndRender(); 
-    showRecipe(day);
+    let d = RECETAS_BASE[cena] || recetasExternas.find(r => r.nombre === cena);
+    menu[day].cena = cena;
+    menu[day].isExternal = !!d.isExternal;
+    menu[day].url = d.url || null;
+    menu[day].ingredients = [...(d.ingredients || []).map(i => ({...i, qty: 2})), {ing: "Fruta", qty: 1, unit: "u"}];
+    saveAndRender(); showRecipe(day);
 }
 
 function saveExternalRecipe() {
     const n = document.getElementById("ext-name").value;
     const u = document.getElementById("ext-url").value;
-    if(n && u) { 
-        recetasExternas.push({nombre:n, url:u, isExternal:true}); 
+    const rawIng = document.getElementById("ext-ingredients").value;
+
+    if(n && u) {
+        let listaProcesada = [];
+        if (rawIng) {
+            rawIng.split("\n").forEach(linea => {
+                if (linea.trim()) {
+                    const match = linea.match(/(\d+)\s*(\w*)\s*(.*)/);
+                    if (match) {
+                        listaProcesada.push({ qty: parseInt(match[1]) || 1, unit: match[2] || "u", ing: match[3] || linea.trim() });
+                    } else {
+                        listaProcesada.push({ qty: 1, unit: "u", ing: linea.trim() });
+                    }
+                }
+            });
+        }
+        recetasExternas.push({nombre: n, url: u, isExternal: true, ingredients: listaProcesada}); 
         saveAndRender();
-        document.getElementById("ext-name").value = "";
-        document.getElementById("ext-url").value = "";
+        document.getElementById("ext-name").value = ""; document.getElementById("ext-url").value = ""; document.getElementById("ext-ingredients").value = "";
         alert("¡Receta guardada!");
     }
 }
 
-function saveInfoItem() {
-    const n = document.getElementById("info-name").value;
-    const u = document.getElementById("info-url").value;
-    if(n && u) { 
-        infoHemeroteca.push({nombre:n, url:u}); 
-        saveAndRender();
-        document.getElementById("info-name").value = "";
-        document.getElementById("info-url").value = "";
-    }
+function openLibrary() { 
+    const list = document.getElementById("library-list");
+    const todas = [...Object.keys(RECETAS_BASE), ...recetasExternas.map(r => r.nombre)];
+    list.innerHTML = todas.map(n => {
+        const esBase = RECETAS_BASE[n];
+        return `<div class="lib-item" style="display:flex; justify-content:space-between; align-items:center;">
+                    <span onclick="showLibraryRecipe('${n}')" style="flex-grow:1; cursor:pointer;">📖 ${n} ${esBase ? '' : '(Mía)'}</span>
+                    ${esBase ? '' : `<button onclick="deleteUserRecipe('${n}')" style="background:red; width:auto; padding:2px 8px; margin:0;">🗑️</button>`}
+                </div>`;
+    }).join("");
+    document.getElementById("library-modal").style.display = "flex"; 
+}
+
+function deleteUserRecipe(nombre) {
+    if(confirm(`¿Borrar "${nombre}"?`)) { recetasExternas = recetasExternas.filter(r => r.nombre !== nombre); saveAndRender(); openLibrary(); }
+}
+
+function showLibraryRecipe(n) { 
+    closeModal('library-modal'); 
+    let d = RECETAS_BASE[n] || recetasExternas.find(r => r.nombre === n);
+    document.getElementById("recipe-detail").innerHTML = `<h3>${n}</h3>` + (d.isExternal ? `<a href="${d.url}" target="_blank" class="btn-link">📺 Ver Video</a>` : `<p>${d.instrucciones}</p>`);
+    document.getElementById("recipe-modal").style.display = "flex"; 
 }
 
 function renderInfoList() {
-    const list = document.getElementById("info-list-preview");
-    if (list) {
-        list.innerHTML = infoHemeroteca.map((item, i) => `
-            <div class="lib-item">
-                <span onclick="window.open('${item.url}')">📖 ${item.nombre}</span>
-                <button class="btn-delete" onclick="deleteInfo(${i})" style="width:auto; padding:2px 5px; margin:0; background:red;">🗑️</button>
-            </div>`).join("");
-    }
+    document.getElementById("info-list-preview").innerHTML = infoHemeroteca.map((item, i) => `<div class="lib-item"><span>💡 ${item.nombre}</span> <button onclick="deleteInfo(${i})" style="background:red; width:auto; padding:2px 5px; margin:0;">🗑️</button></div>`).join("");
 }
 
-function deleteInfo(i) {
-    infoHemeroteca.splice(i, 1);
-    saveAndRender();
+function deleteInfo(i) { infoHemeroteca.splice(i, 1); saveAndRender(); }
+function saveInfoItem() {
+    const n = document.getElementById("info-name").value, u = document.getElementById("info-url").value;
+    if(n && u) { infoHemeroteca.push({nombre:n, url:u}); saveAndRender(); document.getElementById("info-name").value = ""; document.getElementById("info-url").value = ""; }
 }
 
 function buscarRecetaPorIngrediente() {
     const i = document.getElementById("inventory-input").value.toLowerCase();
     const res = document.getElementById("search-result");
-    let msg = SUGERENCIAS_INGREDIENTES[i] || "Hacé un salteado con lo que tengas, ajo y cúrcuma. ¡Queda todo bien!";
-    res.innerHTML = `<p>${msg}</p><button onclick="aplicarAlMenu('${i}')" class="btn-apply" style="background:#40c057; color:white; border:none; padding:8px; border-radius:5px; width:100%;">Usar en el menú de hoy</button>`;
+    res.innerHTML = `<p>Usalo en un salteado con cúrcuma y ajo.</p><button onclick="aplicarAlMenu('${i}')" class="btn-apply">Usar hoy</button>`;
     res.style.display = "block";
 }
 
-function aplicarAlMenu(ing) {
-    const hoy = days[(new Date().getDay() + 6) % 7];
-    menu[hoy].cena = `Especial de ${ing}`;
-    saveAndRender();
-    alert("Menú de hoy actualizado.");
-}
+function aplicarAlMenu(ing) { const hoy = days[(new Date().getDay() + 6) % 7]; menu[hoy].cena = `Especial de ${ing}`; saveAndRender(); }
 
-function mostrarConsejoDelDia() {
-    const el = document.getElementById("daily-tip-text");
-    if (el) el.innerText = CONSEJOS_DIARIOS[(new Date().getDate() - 1) % 31];
-}
+function mostrarConsejoDelDia() { document.getElementById("daily-tip-text").innerText = CONSEJOS_DIARIOS[(new Date().getDate() - 1) % 31]; }
 
 function generateShoppingList() {
     let t = {}; 
-    Object.values(menu).forEach(d => d.ingredients?.forEach(i => { 
-        if(!t[i.ing]) t[i.ing] = {q:0, u:i.unit}; 
-        t[i.ing].q += i.qty; 
-    }));
-    const listEl = document.getElementById("shopping-list");
-    if (listEl) {
-        listEl.innerHTML = Object.entries(t).map(([n, d]) => `<li><input type="checkbox"> ${Math.ceil(d.q)}${d.u} ${n}</li>`).join("");
-    }
+    Object.values(menu).forEach(d => d.ingredients?.forEach(i => { if(!t[i.ing]) t[i.ing] = {q:0, u:i.unit}; t[i.ing].q += i.qty; }));
+    document.getElementById("shopping-list").innerHTML = Object.entries(t).map(([n, d]) => `<li><input type="checkbox"> ${Math.ceil(d.q)}${d.u} ${n}</li>`).join("");
 }
 
 function updateReminders() { 
     const r = menu[days[(new Date().getDay() + 6) % 7]]?.remojo; 
-    const sec = document.getElementById("reminders-section");
-    if (sec) {
-        sec.style.display = r ? "block" : "none";
-        document.getElementById("daily-reminder").innerText = r || "";
-    }
+    document.getElementById("reminders-section").style.display = r ? "block" : "none";
+    document.getElementById("daily-reminder").innerText = r || "";
 }
 
-// Modales
 function closeModal(id) { document.getElementById(id).style.display = "none"; }
 function openAdvisor() { document.getElementById("advisor-modal").style.display = "flex"; }
-function openLibrary() { 
-    document.getElementById("library-list").innerHTML = Object.keys(RECETAS_EXPERT).map(n => `<div class="lib-item" onclick="showLibraryRecipe('${n}')">📖 ${n}</div>`).join("");
-    document.getElementById("library-modal").style.display = "flex"; 
-}
-function showLibraryRecipe(n) { 
-    closeModal('library-modal'); 
-    document.getElementById("recipe-detail").innerHTML = `<h3>${n}</h3><p>${RECETAS_EXPERT[n].instrucciones}</p>`; 
-    document.getElementById("recipe-modal").style.display = "flex"; 
-}
-function consultarAsesor() { alert("Priorizá alimentos reales, evitá ultraprocesados y dormí 8hs."); }
+function consultarAsesor() { alert("Priorizá alimentos reales."); }
 
-// Arrancamos la App
 renderAll();
