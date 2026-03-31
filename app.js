@@ -7,58 +7,53 @@ let recetasExternas = JSON.parse(localStorage.getItem("recetasExternas")) || [];
 let infoHemeroteca = JSON.parse(localStorage.getItem("infoHemeroteca")) || [];
 
 const CONSEJOS_DIARIOS = [
-    "Hibiscus: Antioxidante potente, ideal para la presión.",
-    "Regla 80/20: Come hasta estar 80% lleno.",
+    "Activación: Remojá las nueces 8h para eliminar antinutrientes.",
+    "Lino y Chía: Trituralas antes de comer para absorber su Omega 3.",
+    "Sésamo: Es una fuente de calcio superior a los lácteos.",
+    "Girasol: Aporta Vitamina E, ideal para la salud de la piel.",
+    "Snack inteligente: Un puñado de almendras calma la ansiedad.",
     "Vinagre de Manzana: Reduce picos de glucosa antes de comer.",
-    "Magnesio: Semillas de zapallo son una fuente económica.",
+    "Magnesio: Las semillas de zapallo son el mejor relajante muscular.",
     "Cúrcuma + Pimienta: Activa el poder antiinflamatorio.",
     "Caminata: 10 min post-cena mejora la digestión.",
     "Luz Solar: 15 min mañana regula el sueño.",
     "Proteína al Desayuno: Evita antojos dulces luego.",
-    "Orden: Primero fibra, luego proteína, al final carbos.",
+    "Harina de Coco: Una opción keto y sin gluten para tus pancakes.",
     "Almidón Resistente: Arroz frío de ayer es mejor fibra.",
     "Hidratación: Bebe agua fuera de las comidas.",
     "Masticación: Muerde 20 veces cada bocado.",
     "Caldo de Huesos: Colágeno barato para el intestino.",
-    "Evita JMAF: Enemigo #1 del hígado graso.",
+    "Evita JMAF: El jarabe de maíz es el enemigo #1.",
     "Dormir: Oscuridad total mejora el metabolismo.",
     "Fruta Entera: Siempre mejor que el jugo.",
     "Hígado: Multivitamínico natural, una vez por semana.",
-    "Aceite de Oliva: Úsalo en crudo para sus beneficios.",
+    "Aceite de Oliva: Úsalo en crudo, no lo calientes demasiado.",
     "Cenas Tempranas: Deja 3h antes de dormir.",
     "Legumbres: Remójalas con vinagre 12h.",
-    "Probióticos: Kéfir o chucrut caseros son salud pura.",
-    "Huevo: Esencial para hormonas y cerebro.",
+    "Probióticos: El kéfir de agua es salud intestinal pura.",
+    "Huevo: Esencial para tus hormonas y cerebro.",
     "Jengibre: Mejora la motilidad intestinal.",
-    "Sal de Mar: Aporta minerales que la común no tiene.",
-    "Grasas: Coco y manteca son estables al calor.",
-    "Etiquetas: Más de 5 ingredientes = ultraprocesado.",
-    "Edulcorantes: Engañan al cerebro, evítalos.",
-    "Vitamina C: El morrón rojo tiene más que el cítrico.",
+    "Sal de Mar: Aporta minerales esenciales.",
+    "Frutos Secos: No los tuestes con azúcar ni mucha sal.",
+    "Vitamina C: El morrón rojo tiene más que la naranja.",
     "Ducha Fría: Un minuto al final activa la grasa parda.",
-    "Pantallas: Apaga el celular 1h antes de dormir.",
     "Gratitud: Comer relajado mejora la absorción."
 ];
 
 const RECETAS_BASE = {
-    "Guiso de Lentejas Turcas": { ingredients: [{ing: "lentejas turcas", qty: 200, unit: "g"}, {ing: "zapallo", qty: 400, unit: "g"}], remojo: "lentejas", instrucciones: "Cocinar 15 min con cúrcuma.", beneficio: "Hierro." },
-    "Nuggets de Pollo y Avena": { ingredients: [{ing: "pechuga", qty: 400, unit: "g"}, {ing: "avena", qty: 100, unit: "g"}], instrucciones: "Empanar y hornear.", beneficio: "Proteína." },
-    "Tacos de Lechuga": { ingredients: [{ing: "pollo", qty: 400, unit: "g"}, {ing: "palta", qty: 1, unit: "u"}], instrucciones: "Usar lechuga como wrap.", beneficio: "Sin harinas." },
-    "Hamburguesas de Mijo": { ingredients: [{ing: "mijo", qty: 300, unit: "g"}, {ing: "zanahoria", qty: 1, unit: "u"}], remojo: "mijo", instrucciones: "Dorar en sartén.", beneficio: "Económico." },
-    "Tortilla de Garbanzos": { ingredients: [{ing: "harina garbanzo", qty: 150, unit: "g"}, {ing: "espinaca", qty: 1, unit: "atado"}], instrucciones: "Mezclar con agua y cocinar.", beneficio: "Fibra." },
-    "Pescado al Horno": { ingredients: [{ing: "pescado", qty: 400, unit: "g"}], instrucciones: "Hornear con limón y especias.", beneficio: "Omega 3." },
-    "Bolas de Carne": { ingredients: [{ing: "carne picada", qty: 400, unit: "g"}, {ing: "tomate", qty: 200, unit: "g"}], instrucciones: "Cocinar en salsa.", beneficio: "Saciante." },
-    "Quinoa con Hongos": { ingredients: [{ing: "quinoa", qty: 200, unit: "g"}], remojo: "quinoa", instrucciones: "Cocinar 15 min.", beneficio: "Completo." },
-    "Revuelto Gramajo": { ingredients: [{ing: "huevo", qty: 4, unit: "u"}, {ing: "chauchas", qty: 200, unit: "g"}], instrucciones: "Saltear y revolver.", beneficio: "Rápido." },
-    "Pastel de Pollo": { ingredients: [{ing: "puré zapallo", qty: 500, unit: "g"}, {ing: "pollo", qty: 400, unit: "g"}], instrucciones: "Gratinar.", beneficio: "Vitamina A." },
-    "Wok de Vegetales": { ingredients: [{ing: "vegetales", qty: 500, unit: "g"}, {ing: "huevo", qty: 2, unit: "u"}], instrucciones: "Saltear fuerte.", beneficio: "Antioxidante." },
-    "Sopa de Arvejas": { ingredients: [{ing: "arvejas", qty: 200, unit: "g"}], remojo: "arvejas", instrucciones: "Licuar post-hervido.", beneficio: "Barato." }
+    "Guiso de Lentejas Turcas": { ingredients: [{ing: "lentejas turcas", qty: 200, unit: "g"}, {ing: "zapallo", qty: 400, unit: "g"}, {ing: "semillas girasol", qty: 30, unit: "g"}], remojo: "lentejas", instrucciones: "Cocinar 15 min. Sumar girasol al final.", beneficio: "Hierro y Zinc." },
+    "Nuggets de Pollo y Almendras": { ingredients: [{ing: "pechuga", qty: 400, unit: "g"}, {ing: "harina almendras", qty: 100, unit: "g"}], instrucciones: "Empanar con almendras trituradas y hornear.", beneficio: "Proteína limpia." },
+    "Tacos de Lechuga y Nueces": { ingredients: [{ing: "pollo", qty: 400, unit: "g"}, {ing: "nueces", qty: 50, unit: "g"}, {ing: "palta", qty: 1, unit: "u"}], instrucciones: "Usar lechuga como wrap y sumar nueces picadas.", beneficio: "Grasas sanas." },
+    "Hamburguesas de Mijo y Sésamo": { ingredients: [{ing: "mijo", qty: 300, unit: "g"}, {ing: "sésamo", qty: 20, unit: "g"}], remojo: "mijo", instrucciones: "Dorar en sartén con sésamo.", beneficio: "Calcio." },
+    "Tortilla de Garbanzos y Lino": { ingredients: [{ing: "harina garbanzo", qty: 150, unit: "g"}, {ing: "lino molido", qty: 20, unit: "g"}], instrucciones: "Mezclar con agua y lino. Cocinar.", beneficio: "Fibra Omega 3." },
+    "Pescado en Crosta de Semillas": { ingredients: [{ing: "pescado", qty: 400, unit: "g"}, {ing: "mix semillas", qty: 50, unit: "g"}], instrucciones: "Cubrir el pescado con semillas y hornear.", beneficio: "Omega 3 extra." },
+    "Ensalada de Quinoa y Almendras": { ingredients: [{ing: "quinoa", qty: 200, unit: "g"}, {ing: "almendras", qty: 30, unit: "g"}], remojo: "quinoa", instrucciones: "Cocinar quinoa y sumar almendras fileteadas.", beneficio: "Proteína completa." }
 };
 
 const DESAYUNOS_EXPERT = {
-    "Pancakes de Banana y Coco": { ingredients: [{ing: "huevo", qty: 2, unit: "u"}, {ing: "banana", qty: 1, unit: "u"}], instrucciones: "Pisar banana, mezclar con huevo y coco rallado. Vuelta y vuelta." },
-    "Pan de Nube con Palta": { ingredients: [{ing: "huevo", qty: 2, unit: "u"}, {ing: "queso crema", qty: 2, unit: "cdas"}], instrucciones: "Batir claras a nieve, mezclar con yemas y queso. Hornear 15 min." },
-    "Chiapudding con Frutos Secos": { ingredients: [{ing: "chía", qty: 3, unit: "cdas"}, {ing: "leche coco", qty: 200, unit: "ml"}], instrucciones: "Dejar hidratar la chía 8hs. Sumar fruta fresca arriba." }
+    "Pancakes de Banana y Coco": { ingredients: [{ing: "huevo", qty: 2, unit: "u"}, {ing: "banana", qty: 1, unit: "u"}, {ing: "coco", qty: 20, unit: "g"}], instrucciones: "Mezclar huevo, banana y coco. Vuelta y vuelta." },
+    "Chiapudding con Nueces": { ingredients: [{ing: "chía", qty: 3, unit: "cdas"}, {ing: "nueces", qty: 4, unit: "u"}], instrucciones: "Hidratar chía en leche vegetal. Sumar nueces arriba." },
+    "Yogur con Mix de Semillas": { ingredients: [{ing: "yogur natural", qty: 200, unit: "g"}, {ing: "mix semillas", qty: 2, unit: "cdas"}], instrucciones: "Mezclar yogur (sin azúcar) con semillas activadas." }
 };
 
 function generateSmartMenu() {
@@ -212,7 +207,7 @@ function saveInfoItem() {
 function buscarRecetaPorIngrediente() {
     const i = document.getElementById("inventory-input").value.toLowerCase();
     const res = document.getElementById("search-result");
-    res.innerHTML = `<p>Idea: Salteado con ajo, jengibre y cúrcuma.</p><button onclick="aplicarAlMenu('${i}')" class="btn-apply">Usar hoy</button>`;
+    res.innerHTML = `<p>Idea: Salteado crocante con ${i} y mix de semillas.</p><button onclick="aplicarAlMenu('${i}')" class="btn-apply">Usar hoy</button>`;
     res.style.display = "block";
 }
 
