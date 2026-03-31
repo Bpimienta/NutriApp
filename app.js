@@ -56,9 +56,9 @@ const RECETAS_BASE = {
 };
 
 const DESAYUNOS_EXPERT = {
-    "Chiapudding con [FRUTA]": { ingredients: [{ing: "chía", qty: 3, unit: "cdas"}], instrucciones: "Mezclar con leche de avena casera." },
-    "Omelette de [FRUTA]": { ingredients: [{ing: "huevo", qty: 2, unit: "u"}], instrucciones: "Hacer omelette dulce con canela." },
-    "Porridge de Avena": { ingredients: [{ing: "avena", qty: 4, unit: "cdas"}], instrucciones: "Cocinar con agua o leche." }
+    "Pancakes de Banana y Coco": { ingredients: [{ing: "huevo", qty: 2, unit: "u"}, {ing: "banana", qty: 1, unit: "u"}], instrucciones: "Pisar banana, mezclar con huevo y coco rallado. Vuelta y vuelta." },
+    "Pan de Nube con Palta": { ingredients: [{ing: "huevo", qty: 2, unit: "u"}, {ing: "queso crema", qty: 2, unit: "cdas"}], instrucciones: "Batir claras a nieve, mezclar con yemas y queso. Hornear 15 min." },
+    "Chiapudding con Frutos Secos": { ingredients: [{ing: "chía", qty: 3, unit: "cdas"}, {ing: "leche coco", qty: 200, unit: "ml"}], instrucciones: "Dejar hidratar la chía 8hs. Sumar fruta fresca arriba." }
 };
 
 function generateSmartMenu() {
@@ -68,19 +68,22 @@ function generateSmartMenu() {
     days.forEach(day => {
         if (poolCenas.length === 0) poolCenas = [...Object.keys(RECETAS_BASE), ...recetasExternas.map(r => r.nombre)];
         const cenaNombre = poolCenas.splice(Math.floor(Math.random() * poolCenas.length), 1)[0];
-        const desBase = Object.keys(DESAYUNOS_EXPERT)[Math.floor(Math.random() * 3)];
+        const desNombres = Object.keys(DESAYUNOS_EXPERT);
+        const desElegido = desNombres[Math.floor(Math.random() * desNombres.length)];
         const fruta = FRUTAS[Math.floor(Math.random() * FRUTAS.length)];
         
-        let d = RECETAS_BASE[cenaNombre] || recetasExternas.find(r => r.nombre === cenaNombre);
+        let dCena = RECETAS_BASE[cenaNombre] || recetasExternas.find(r => r.nombre === cenaNombre);
+        let dDesayuno = DESAYUNOS_EXPERT[desElegido];
         
         menu[day] = { 
-            desayuno: desBase.replace("[FRUTA]", fruta), 
+            desayuno: desElegido, 
             cena: cenaNombre, 
-            isExternal: !!d.isExternal, 
-            url: d.url || null, 
-            remojo: d.remojo || null, 
+            isExternal: !!dCena.isExternal, 
+            url: dCena.url || null, 
+            remojo: dCena.remojo || null, 
             ingredients: [
-                ...(d.ingredients || []).map(i => ({...i, qty: i.qty * mult})), 
+                ...(dCena.ingredients || []).map(i => ({...i, qty: i.qty * mult})),
+                ...(dDesayuno.ingredients || []).map(i => ({...i, qty: i.qty})),
                 {ing: fruta, qty: 1, unit: "u"}
             ] 
         };
@@ -109,8 +112,17 @@ function renderAll() {
 function showRecipe(day) {
     const d = menu[day];
     if (!d) return;
+    let desInfo = DESAYUNOS_EXPERT[d.desayuno];
     let cenaHtml = d.isExternal ? `<a href="${d.url}" target="_blank" class="btn-link">📺 Ver Video Tutorial</a>` : `<p>${RECETAS_BASE[d.cena]?.instrucciones || ''}</p>`;
-    document.getElementById("recipe-detail").innerHTML = `<h3>☀️ Desayuno</h3><p>${d.desayuno}</p><hr><h3>🌙 ${d.cena}</h3>${cenaHtml}<button onclick="changeSingleMeal('${day}')" style="margin-top:10px;">🎲 Cambiar Día</button>`;
+    
+    document.getElementById("recipe-detail").innerHTML = `
+        <h3>☀️ Desayuno: ${d.desayuno}</h3>
+        <p>${desInfo ? desInfo.instrucciones : 'Acompañar con infusión.'}</p>
+        <hr>
+        <h3>🌙 Cena: ${d.cena}</h3>
+        ${cenaHtml}
+        <button onclick="changeSingleMeal('${day}')" style="margin-top:15px; background:#6c757d;">🎲 Cambiar Cena</button>
+    `;
     document.getElementById("recipe-modal").style.display = "flex";
 }
 
@@ -129,7 +141,6 @@ function saveExternalRecipe() {
     const n = document.getElementById("ext-name").value;
     const u = document.getElementById("ext-url").value;
     const rawIng = document.getElementById("ext-ingredients").value;
-
     if(n && u) {
         let listaProcesada = [];
         if (rawIng) {
@@ -173,9 +184,7 @@ function showLibraryRecipe(n) {
     let d = RECETAS_BASE[n] || recetasExternas.find(r => r.nombre === n);
     let html = `<h3>${n}</h3>`;
     html += d.isExternal ? `<a href="${d.url}" target="_blank" class="btn-link">📺 Ver Video</a>` : `<p>${d.instrucciones}</p>`;
-    // BOTÓN MÁGICO PARA APLICAR AL MENÚ DE HOY
-    html += `<button onclick="aplicarAlMenu('${n}')" style="margin-top:20px; background:var(--primary); color:white;">🍽️ Usar en el menú de hoy</button>`;
-    
+    html += `<button onclick="aplicarAlMenu('${n}')" style="margin-top:20px; background:var(--primary); color:white;">🍽️ Usar hoy</button>`;
     document.getElementById("recipe-detail").innerHTML = html;
     document.getElementById("recipe-modal").style.display = "flex"; 
 }
@@ -183,15 +192,11 @@ function showLibraryRecipe(n) {
 function aplicarAlMenu(nombreReceta) { 
     const hoy = days[(new Date().getDay() + 6) % 7];
     let d = RECETAS_BASE[nombreReceta] || recetasExternas.find(r => r.nombre === nombreReceta);
-    
     menu[hoy].cena = nombreReceta;
     menu[hoy].isExternal = !!d.isExternal;
     menu[hoy].url = d.url || null;
     menu[hoy].ingredients = [...(d.ingredients || []).map(i => ({...i, qty: 2})), {ing: "Fruta", qty: 1, unit: "u"}];
-    
-    saveAndRender(); 
-    closeModal('recipe-modal');
-    alert(`¡Listo! Hoy cenás ${nombreReceta}.`);
+    saveAndRender(); closeModal('recipe-modal');
 }
 
 function renderInfoList() {
@@ -207,7 +212,7 @@ function saveInfoItem() {
 function buscarRecetaPorIngrediente() {
     const i = document.getElementById("inventory-input").value.toLowerCase();
     const res = document.getElementById("search-result");
-    res.innerHTML = `<p>Usalo en un salteado con cúrcuma y ajo.</p><button onclick="aplicarAlMenu('${i}')" class="btn-apply">Usar hoy</button>`;
+    res.innerHTML = `<p>Idea: Salteado con ajo, jengibre y cúrcuma.</p><button onclick="aplicarAlMenu('${i}')" class="btn-apply">Usar hoy</button>`;
     res.style.display = "block";
 }
 
