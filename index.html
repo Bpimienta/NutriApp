@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>NutriPlan Pro - Mi Salud</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#2d6a4f">
+  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2424/2424538.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <h1>🌿 NutriPlan</h1>
+    <div class="header-btns">
+        <button onclick="openAdvisor()" class="btn-advisor">🥗 Asesor</button>
+        <button onclick="openLibrary()" class="btn-library">📚 Recetario</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="daily-tip-section" class="card tip-highlight">
+      <div class="tip-content">
+        <span class="tip-icon">💡</span>
+        <p id="daily-tip-text">Cargando sabiduría nutricional...</p>
+      </div>
+    </section>
+
+    <section id="reminders-section" class="card highlight" style="display:none;">
+      <h3>🔔 Activación nocturna:</h3>
+      <div id="daily-reminder"></div>
+    </section>
+
+    <section class="card search-vault">
+      <h2>🔍 ¿Qué tenés en la heladera?</h2>
+      <p class="subtitle">Escribí un ingrediente y te sugiero cómo usarlo hoy.</p>
+      <div class="input-group-vertical">
+        <input type="text" id="inventory-input" placeholder="Ej: Trigo burgol, espinaca, atún...">
+        <button onclick="buscarRecetaPorIngrediente()" class="btn-search">🔍 Buscar Idea</button>
+      </div>
+      <div id="search-result" class="search-result-box" style="display:none;"></div>
+    </section>
+
+    <section class="card">
+      <h2>📅 Mi Menú Semanal</h2>
+      <div class="controls-vertical">
+        <label>Porciones:</label>
+        <select id="servings-selector" onchange="updateMenuPortions()">
+          <option value="2">2 (Solo Cena)</option>
+          <option value="4" selected>4 (Cena + Almuerzo mañana)</option>
+        </select>
+        <button onclick="generateSmartMenu()" class="btn-primary">🔄 Generar Nueva Semana</button>
+      </div>
+      
+      <div id="menu-grid" class="menu-container"></div>
+    </section>
+
+    <section class="card">
+      <h2>🔗 Guardar Mis Recetas</h2>
+      <div class="input-group-vertical">
+        <input type="text" id="ext-name" placeholder="Nombre del plato">
+        <input type="url" id="ext-url" placeholder="Link de YouTube o Web">
+        <button onclick="saveExternalRecipe()" class="btn-secondary">💾 Guardar Receta</button>
+      </div>
+    </section>
+
+    <section class="card info-vault">
+      <h2>🧠 Mi Hemeroteca</h2>
+      <p class="subtitle">Artículos y videos sobre salud y nutrición.</p>
+      <div class="input-group-vertical">
+        <input type="text" id="info-name" placeholder="Título de la info">
+        <input type="url" id="info-url" placeholder="Link del artículo">
+        <button onclick="saveInfoItem()" class="btn-info">📖 Guardar en Hemeroteca</button>
+      </div>
+      <div id="info-list-preview" class="mini-list"></div>
+    </section>
+
+    <section class="card">
+      <h2>🛒 Lista de Compras</h2>
+      <ul id="shopping-list"></ul>
+    </section>
+  </main>
+
+  <div id="recipe-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('recipe-modal')">&times;</span>
+      <div id="recipe-detail"></div>
+    </div>
+  </div>
+
+  <div id="library-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('library-modal')">&times;</span>
+      <h2>📚 Mi Biblioteca</h2>
+      <div id="library-list"></div>
+    </div>
+  </div>
+
+  <div id="advisor-modal" class="modal">
+    <div class="modal-content chat-container">
+      <span class="close" onclick="closeModal('advisor-modal')">&times;</span>
+      <h2>🥗 Asesor Funcional</h2>
+      <div id="chat-display" class="chat-box">
+        <p class="bot-msg">¡Hola! Soy tu asistente. ¿Querés saber si un producto es inflamatorio o cómo mejorar una receta?</p>
+      </div>
+      <div class="input-group">
+        <input type="text" id="chat-input" placeholder="Ej: ¿El azúcar es mala?">
+        <button onclick="consultarAsesor()" class="btn-primary">Consultar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
