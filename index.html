@@ -22,8 +22,18 @@
     <section id="daily-tip-section" class="card tip-highlight">
       <div class="tip-content">
         <span class="tip-icon">💡</span>
-        <p id="daily-tip-text">Cargando sabiduría...</p>
+        <p id="daily-tip-text">Cargando...</p>
       </div>
+    </section>
+
+    <section class="card search-vault">
+      <h2>🔍 Heladera Inteligente</h2>
+      <p class="subtitle">Escribí lo que tenés y te doy 3 ideas detalladas.</p>
+      <div class="input-group-vertical">
+        <input type="text" id="inventory-input" placeholder="Ej: Pollo, brócoli, calabaza...">
+        <button onclick="buscarRecetaPorIngrediente()" class="btn-search">✨ Buscar Ideas Detalladas</button>
+      </div>
+      <div id="search-result" class="search-result-box" style="display:none; margin-top:15px; border-top:1px solid #eee; padding-top:10px;"></div>
     </section>
 
     <section class="card">
@@ -41,20 +51,16 @@
 
     <section class="card">
       <h2>🔗 Guardar Mis Recetas</h2>
-      <p class="subtitle">Pegá el link y los ingredientes (uno por línea).</p>
       <div class="input-group-vertical">
         <input type="text" id="ext-name" placeholder="Nombre del plato">
         <input type="url" id="ext-url" placeholder="Link de IG o YouTube">
-        <textarea id="ext-ingredients" placeholder="Ej: 
-200g almendras
-1 banana
-2 huevos" rows="4"></textarea>
+        <textarea id="ext-ingredients" placeholder="Ingredientes (uno por línea)" rows="3"></textarea>
         <button onclick="saveExternalRecipe()" class="btn-secondary">💾 Guardar Receta</button>
       </div>
     </section>
 
     <section class="card">
-      <h2>🛒 Lista de Compras (Semillas incl.)</h2>
+      <h2>🛒 Lista de Compras</h2>
       <ul id="shopping-list"></ul>
     </section>
   </main>
