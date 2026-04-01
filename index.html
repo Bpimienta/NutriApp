@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
   <header>
     <h1>🌿 NutriPlan</h1>
     <div class="header-btns">
@@ -16,50 +17,52 @@
         <button onclick="openLibrary()" class="btn-library">📚 Recetario</button>
     </div>
   </header>
+
   <main>
     <section id="daily-tip-section" class="card tip-highlight">
       <div class="tip-content">
         <span class="tip-icon">💡</span>
-        <p id="daily-tip-text">Cargando consejos con semillas...</p>
+        <p id="daily-tip-text">Cargando sabiduría...</p>
       </div>
     </section>
-    <section class="card search-vault">
-      <h2>🔍 Heladera Inteligente</h2>
-      <div class="input-group-vertical">
-        <input type="text" id="inventory-input" placeholder="¿Qué tenés hoy?">
-        <button onclick="buscarRecetaPorIngrediente()" class="btn-search">Buscar Idea</button>
-      </div>
-      <div id="search-result" class="search-result-box" style="display:none;"></div>
-    </section>
+
     <section class="card">
-      <h2>📅 Menú Semanal</h2>
+      <h2>📅 Mi Menú Semanal</h2>
       <div class="controls-vertical">
         <label>Porciones:</label>
         <select id="servings-selector" onchange="renderAll()">
-          <option value="2">Cena</option>
-          <option value="4" selected>Cena + Almuerzo</option>
+          <option value="2">2 (Cena)</option>
+          <option value="4" selected>4 (Cena + Almuerzo)</option>
         </select>
-        <button onclick="generateSmartMenu()" class="btn-primary">Generar Semana</button>
+        <button onclick="generateSmartMenu()" class="btn-primary">🔄 Generar Nueva Semana</button>
       </div>
       <div id="menu-grid" class="menu-container"></div>
     </section>
+
     <section class="card">
       <h2>🔗 Guardar Mis Recetas</h2>
+      <p class="subtitle">Pegá el link y los ingredientes (uno por línea).</p>
       <div class="input-group-vertical">
         <input type="text" id="ext-name" placeholder="Nombre del plato">
-        <input type="url" id="ext-url" placeholder="Link (YouTube/Instagram)">
-        <textarea id="ext-ingredients" placeholder="Pegá los ingredientes acá..." rows="4"></textarea>
+        <input type="url" id="ext-url" placeholder="Link de IG o YouTube">
+        <textarea id="ext-ingredients" placeholder="Ej: 
+200g almendras
+1 banana
+2 huevos" rows="4"></textarea>
         <button onclick="saveExternalRecipe()" class="btn-secondary">💾 Guardar Receta</button>
       </div>
     </section>
+
     <section class="card">
-      <h2>🛒 Lista de Compras</h2>
+      <h2>🛒 Lista de Compras (Semillas incl.)</h2>
       <ul id="shopping-list"></ul>
     </section>
   </main>
+
   <div id="recipe-modal" class="modal"><div class="modal-content"><span class="close" onclick="closeModal('recipe-modal')">&times;</span><div id="recipe-detail"></div></div></div>
   <div id="library-modal" class="modal"><div class="modal-content"><span class="close" onclick="closeModal('library-modal')">&times;</span><h2>📚 Mi Biblioteca</h2><div id="library-list"></div></div></div>
   <div id="advisor-modal" class="modal"><div class="modal-content chat-container"><span class="close" onclick="closeModal('advisor-modal')">&times;</span><h2>🥗 Asesor</h2><div id="chat-display" class="chat-box"></div><div class="input-group"><input type="text" id="chat-input"><button onclick="consultarAsesor()" class="btn-primary">OK</button></div></div></div>
+
   <script src="app.js"></script>
 </body>
 </html>
