@@ -5,41 +5,99 @@ let menu = JSON.parse(localStorage.getItem("menu")) || {};
 let recetasExternas = JSON.parse(localStorage.getItem("recetasExternas")) || [];
 
 const CONSEJOS_DIARIOS = [
-    "Semillas de Zapallo: Gran fuente de magnesio para descansar mejor.",
-    "Activación: Remojá nueces y almendras 8h para digerirlas mejor.",
-    "Lino y Chía: Siempre molidas para aprovechar el Omega 3.",
-    "Sésamo: Tostalo apenas para activar su calcio.",
-    "Frutos Secos: Guardalos en frasco de vidrio en lugar oscuro.",
-    "Girasol: Aporta Vitamina E, protectora de tus células.",
-    "Tip: Sumá un puñado de semillas a tus ensaladas para saciedad."
+    "Activación: Remojá las nueces 8h para eliminar antinutrientes.",
+    "Lino y Chía: Trituralas justo antes de comer para el Omega 3.",
+    "Sésamo: Gran fuente de calcio. Tostalo apenas para activar.",
+    "Magnesio: Semillas de zapallo son ideales para relajar post-trabajo.",
+    "Crocante Sano: Usá frutos secos picados en vez de crutones.",
+    "Tip: Los martes y jueves priorizá la practicidad sin harinas.",
+    "Hidratación: Un vaso de agua con limón al despertar limpia el hígado."
 ];
 
-const RECETAS_BASE = {
-    "Guiso de Lentejas y Girasol": { 
-        ingredients: [{ing: "lentejas", qty: 200, unit: "g"}, {ing: "zapallo", qty: 400, unit: "g"}, {ing: "semillas girasol", qty: 30, unit: "g"}], 
-        instrucciones: "1. Remojar lentejas 8h. 2. Hervir con zapallo y cúrcuma 20 min. 3. Sumar semillas al servir." 
+// CATEGORÍAS DE RECETAS POR TIEMPO/ESFUERZO
+const RECETAS_POOL = {
+    elaboradas: {
+        "Pescado en Crosta de Semillas al Horno": { 
+            ingredients: [{ing: "pescado", qty: 400, unit: "g"}, {ing: "mix semillas", qty: 50, unit: "g"}, {ing: "vegetales varios", qty: 300, unit: "g"}], 
+            instrucciones: "1. Precalentar horno a 200°C. 2. Cubrir el pescado con mostaza y pegar el mix de semillas. 3. Hornear con vegetales 25 min. Ideal para lunes con tiempo." 
+        },
+        "Pastel de Zapallo y Carne con Nueces": { 
+            ingredients: [{ing: "carne picada", qty: 400, unit: "g"}, {ing: "puré zapallo", qty: 500, unit: "g"}, {ing: "nueces", qty: 40, unit: "g"}], 
+            instrucciones: "1. Cocinar la carne con cebolla. 2. Armar capas con el puré de zapallo. 3. Agregar nueces picadas arriba y gratinar al horno." 
+        }
     },
-    "Nuggets de Pollo y Almendras": { 
-        ingredients: [{ing: "pechuga", qty: 400, unit: "g"}, {ing: "harina almendras", qty: 100, unit: "g"}], 
-        instrucciones: "1. Trozar pollo. 2. Pasar por huevo y almendras molidas. 3. Hornear 20 min a 180°C." 
+    practicas: {
+        "Wrap de Lechuga Express": { 
+            ingredients: [{ing: "lechuga", qty: 1, unit: "u"}, {ing: "atún o pollo cocido", qty: 200, unit: "g"}, {ing: "palta", qty: 1, unit: "u"}], 
+            instrucciones: "1. Lavar hojas de lechuga. 2. Rellenar con proteína y palta. 3. Enrollar y comer. ¡Listo en 5 minutos!" 
+        },
+        "Omelette de Espinaca y Sésamo": { 
+            ingredients: [{ing: "huevo", qty: 3, unit: "u"}, {ing: "espinaca", qty: 1, unit: "atado"}, {ing: "sésamo", qty: 20, unit: "g"}], 
+            instrucciones: "1. Batir huevos con espinaca picada. 2. Cocinar 3 min de cada lado. 3. Espolvorear sésamo. Rápido para días agotadores." 
+        },
+        "Revuelto de Zucchini y Girasol": { 
+            ingredients: [{ing: "zucchini", qty: 2, unit: "u"}, {ing: "huevo", qty: 2, unit: "u"}, {ing: "semillas girasol", qty: 30, unit: "g"}], 
+            instrucciones: "1. Rallar zucchini y saltear 4 min. 2. Agregar huevos y revolver. 3. Sumar girasol al final. Cena nutritiva en 8 min." 
+        }
     },
-    "Tacos de Lechuga y Nueces": { 
-        ingredients: [{ing: "pollo", qty: 400, unit: "g"}, {ing: "nueces", qty: 50, unit: "g"}, {ing: "lechuga", qty: 1, unit: "u"}], 
-        instrucciones: "1. Saltear pollo. 2. Usar lechuga como wrap. 3. Agregar nueces picadas y palta." 
+    estandar: {
+        "Guiso de Lentejas Turcas Rápido": { 
+            ingredients: [{ing: "lentejas turcas", qty: 200, unit: "g"}, {ing: "zapallo", qty: 300, unit: "g"}], 
+            instrucciones: "1. Hervir lentejas (se cocinan en 15 min). 2. Agregar cubos de zapallo. 3. Condimentar con cúrcuma y pimentón." 
+        },
+        "Hamburguesas de Mijo y Lino": { 
+            ingredients: [{ing: "mijo cocido", qty: 300, unit: "g"}, {ing: "lino molido", qty: 30, unit: "g"}], 
+            instrucciones: "1. Mezclar mijo con lino y formar discos. 2. Dorar en sartén 5 min por lado." 
+        }
     }
 };
 
-const DESAYUNOS_EXPERT = {
+const DESAYUNOS = {
     "Pancakes de Banana y Coco": { 
         ingredients: [{ing: "huevo", qty: 2, unit: "u"}, {ing: "banana", qty: 1, unit: "u"}], 
-        instrucciones: "1. Pisar banana, mezclar con huevo. 2. Cocinar en sartén vuelta y vuelta." 
+        instrucciones: "Pisar banana, mezclar con huevo y cocinar en sartén vuelta y vuelta." 
     },
-    "Chiapudding con Nueces": { 
-        ingredients: [{ing: "chía", qty: 3, unit: "cdas"}, {ing: "leche coco", qty: 200, unit: "ml"}], 
-        instrucciones: "1. Hidratar chía en leche 8h. 2. Servir con nueces activadas arriba." 
+    "Chiapudding con Almendras": { 
+        ingredients: [{ing: "chía", qty: 3, unit: "cdas"}, {ing: "almendras", qty: 30, unit: "g"}], 
+        instrucciones: "Hidratar chía en leche vegetal 8h. Sumar almendras fileteadas." 
     }
 };
 
+// --- LÓGICA DE ASIGNACIÓN INTELIGENTE ---
+function generateSmartMenu() {
+    const mult = document.getElementById("servings-selector").value / 2;
+    
+    days.forEach(day => {
+        let pool;
+        // Estrategia fija por día
+        if (day === "Lunes") {
+            pool = RECETAS_POOL.elaboradas;
+        } else if (day === "Martes" || day === "Jueves") {
+            pool = RECETAS_POOL.practicas;
+        } else {
+            pool = {...RECETAS_POOL.estandar, ...RECETAS_POOL.practicas};
+        }
+
+        const cenaNombres = Object.keys(pool);
+        const cenaElegida = cenaNombres[Math.floor(Math.random() * cenaNombres.length)];
+        const desElegido = Object.keys(DESAYUNOS)[Math.floor(Math.random() * 2)];
+        
+        let dCena = pool[cenaElegida];
+        let dDes = DESAYUNOS[desElegido];
+        
+        menu[day] = { 
+            desayuno: desElegido, 
+            cena: cenaElegida, 
+            ingredients: [
+                ...dCena.ingredients.map(i => ({...i, qty: i.qty * mult})),
+                ...dDes.ingredients.map(i => ({...i, qty: i.qty}))
+            ] 
+        };
+    });
+    saveAndRender();
+}
+
+// --- BUSCADOR DETALLADO ---
 function buscarRecetaPorIngrediente() {
     const input = document.getElementById("inventory-input").value.toLowerCase();
     const res = document.getElementById("search-result");
@@ -47,11 +105,11 @@ function buscarRecetaPorIngrediente() {
 
     res.innerHTML = `
         <div style="background:#f0f7f4; padding:15px; border-radius:10px;">
-            <p><strong>3 Ideas con "${input}":</strong></p>
-            <p><strong>🥘 Cuchara:</strong> Crema de zapallo con <strong>${input}</strong> salteado y semillas de sésamo por encima.</p>
-            <p><strong>🥞 Tortilla:</strong> Rallá el <strong>${input}</strong>, mezclalo con 2 huevos y lino molido. Vuelta y vuelta en sartén.</p>
-            <p><strong>🥗 Proteico:</strong> Pollo o pescado sellado con <strong>${input}</strong> al vapor y un puñado de nueces picadas.</p>
-            <button onclick="aplicarHoyPersonalizado('${input}')" class="btn-primary" style="margin-top:10px;">🍽️ Usar en mi cena de hoy</button>
+            <p><strong>💡 Ideas con "${input}" (Sin Gluten/Azúcar):</strong></p>
+            <p><strong>⏱️ Opción Rápida:</strong> Rallá <strong>${input}</strong> y dalo vuelta en la sartén con 2 huevos y semillas de sésamo (estilo tortilla express).</p>
+            <p><strong>🔥 Opción Horno:</strong> Cortá <strong>${input}</strong> en bastones, pasalos por aceite de oliva y harina de almendras. Hornealos hasta que estén crocantes.</p>
+            <p><strong>🥣 Opción Nutritiva:</strong> Salteá <strong>${input}</strong> con ajo, jengibre y un puñado de nueces. Servilo sobre una base de hojas verdes.</p>
+            <button onclick="aplicarHoyPersonalizado('${input}')" class="btn-primary" style="margin-top:10px;">🍽️ Aplicar a mi cena de hoy</button>
         </div>
     `;
     res.style.display = "block";
@@ -62,24 +120,7 @@ function aplicarHoyPersonalizado(ing) {
     menu[hoy].cena = `Plato con ${ing}`;
     menu[hoy].ingredients = [{ing: ing, qty: 200, unit: "g"}, {ing: "Mix Semillas", qty: 20, unit: "g"}];
     saveAndRender();
-}
-
-function generateSmartMenu() {
-    const mult = document.getElementById("servings-selector").value / 2;
-    days.forEach(day => {
-        const cenaKey = Object.keys(RECETAS_BASE)[Math.floor(Math.random() * Object.keys(RECETAS_BASE).length)];
-        const desKey = Object.keys(DESAYUNOS_EXPERT)[Math.floor(Math.random() * Object.keys(DESAYUNOS_EXPERT).length)];
-        let dCena = RECETAS_BASE[cenaKey];
-        let dDes = DESAYUNOS_EXPERT[desKey];
-        menu[day] = {
-            desayuno: desKey, cena: cenaKey,
-            ingredients: [
-                ...dCena.ingredients.map(i => ({...i, qty: i.qty * mult})),
-                ...dDes.ingredients.map(i => ({...i, qty: i.qty}))
-            ]
-        };
-    });
-    saveAndRender();
+    alert("Agregado a hoy. ¡No olvides revisar la lista de compras!");
 }
 
 function generateShoppingList() {
@@ -115,11 +156,16 @@ function renderAll() {
 
 function showRecipe(day) {
     const d = menu[day]; if(!d) return;
-    let des = DESAYUNOS_EXPERT[d.desayuno];
-    let cen = RECETAS_BASE[d.cena] || {instrucciones: "Mezclar y cocinar."};
+    let des = DESAYUNOS[d.desayuno];
+    // Buscar en todas las categorías
+    let cen = RECETAS_POOL.elaboradas[d.cena] || RECETAS_POOL.practicas[d.cena] || RECETAS_POOL.estandar[d.cena] || {instrucciones: "Mezclar ingredientes y cocinar saludablemente."};
+    
     document.getElementById("recipe-detail").innerHTML = `
-        <h3>☀️ ${d.desayuno}</h3><p>${des?.instrucciones || '-'}</p><hr>
-        <h3>🌙 ${d.cena}</h3><p>${cen.instrucciones}</p>
+        <h2 style="color:var(--primary)">☀️ ${d.desayuno}</h2>
+        <p>${des?.instrucciones || '-'}</p>
+        <hr>
+        <h2 style="color:var(--primary)">🌙 ${d.cena}</h2>
+        <p><strong>Preparación:</strong><br>${cen.instrucciones}</p>
     `;
     document.getElementById("recipe-modal").style.display = "flex";
 }
