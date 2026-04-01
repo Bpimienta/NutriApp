@@ -8,29 +8,78 @@ const CONSEJOS_DIARIOS = [
     "Activación: Remojá las nueces 8h para eliminar antinutrientes.",
     "Lino y Chía: Trituralas antes de comer para absorber su Omega 3.",
     "Sésamo: Es una fuente de calcio superior a los lácteos.",
-    "Girasol: Aporta Vitamina E, ideal para la salud de la piel.",
-    "Snack inteligente: Un puñado de almendras calma la ansiedad.",
     "Magnesio: Las semillas de zapallo son el mejor relajante natural.",
     "Cúrcuma + Pimienta: Activa el poder antiinflamatorio.",
     "Caldo de Huesos: Colágeno barato para el intestino.",
-    "Frutos Secos: No los tuestes con azúcar ni aceites vegetales.",
-    "Ducha Fría: Un minuto al final activa la grasa parda.",
-    "Hidratación: Bebe agua fuera de las comidas."
+    "Vinagre de Manzana: Reduce picos de glucosa antes de comer."
 ];
 
+// RECETAS MÁS DETALLADAS
 const RECETAS_BASE = {
-    "Guiso de Lentejas y Girasol": { ingredients: [{ing: "lentejas", qty: 200, unit: "g"}, {ing: "zapallo", qty: 400, unit: "g"}, {ing: "semillas girasol", qty: 30, unit: "g"}], remojo: "lentejas", instrucciones: "Cocinar lentejas y zapallo. Sumar girasol al servir." },
-    "Nuggets de Pollo y Almendras": { ingredients: [{ing: "pechuga", qty: 400, unit: "g"}, {ing: "harina almendras", qty: 100, unit: "g"}], instrucciones: "Empanar el pollo con las almendras procesadas. Hornear." },
-    "Tacos de Lechuga y Nueces": { ingredients: [{ing: "pollo", qty: 400, unit: "g"}, {ing: "nueces", qty: 50, unit: "g"}, {ing: "palta", qty: 1, unit: "u"}], instrucciones: "Usar lechuga como wrap. Sumar nueces picadas para el crocante." },
-    "Tortilla de Garbanzos y Lino": { ingredients: [{ing: "harina garbanzo", qty: 150, unit: "g"}, {ing: "lino molido", qty: 20, unit: "g"}], instrucciones: "Mezclar ingredientes con agua hasta formar pasta. Cocinar." },
-    "Pescado en Crosta de Semillas": { ingredients: [{ing: "pescado", qty: 400, unit: "g"}, {ing: "mix semillas", qty: 50, unit: "g"}], instrucciones: "Cubrir el pescado con las semillas y llevar al horno." }
+    "Guiso de Lentejas y Girasol": { 
+        ingredients: [{ing: "lentejas", qty: 200, unit: "g"}, {ing: "zapallo", qty: 400, unit: "g"}, {ing: "semillas girasol", qty: 30, unit: "g"}], 
+        instrucciones: "1. Remojar lentejas 8h. 2. Hervir con cubos de zapallo y cúrcuma por 20 min hasta que esté tierno. 3. Al servir, agregar las semillas de girasol crudas para mantener sus grasas intactas." 
+    },
+    "Nuggets de Pollo y Almendras": { 
+        ingredients: [{ing: "pechuga", qty: 400, unit: "g"}, {ing: "harina almendras", qty: 100, unit: "g"}, {ing: "huevo", qty: 1, unit: "u"}], 
+        instrucciones: "1. Cortar pollo en cubos. 2. Pasar por huevo batido y luego por almendras trituradas (harina). 3. Hornear 20 min a 180°C hasta dorar. Sin harinas blancas!" 
+    },
+    "Tacos de Lechuga y Nueces": { 
+        ingredients: [{ing: "pollo", qty: 400, unit: "g"}, {ing: "nueces", qty: 50, unit: "g"}, {ing: "palta", qty: 1, unit: "u"}, {ing: "lechuga", qty: 1, unit: "plantas"}], 
+        instrucciones: "1. Saltear el pollo con especias. 2. Picar las nueces. 3. Usar las hojas de lechuga como tortillas, rellenar con pollo, palta y el toque crocante de las nueces." 
+    },
+    "Tortilla de Garbanzos y Lino": { 
+        ingredients: [{ing: "harina garbanzo", qty: 150, unit: "g"}, {ing: "lino molido", qty: 20, unit: "g"}, {ing: "espinaca", qty: 1, unit: "atado"}], 
+        instrucciones: "1. Mezclar harina de garbanzo con agua hasta que parezca huevo batido. 2. Sumar lino y espinaca picada. 3. Cocinar en sartén tapada 5 min por lado." 
+    }
 };
 
 const DESAYUNOS_EXPERT = {
-    "Pancakes de Banana y Coco": { ingredients: [{ing: "huevo", qty: 2, unit: "u"}, {ing: "banana", qty: 1, unit: "u"}], instrucciones: "Pisar banana, mezclar con huevo. Vuelta y vuelta." },
-    "Chiapudding con Nueces": { ingredients: [{ing: "chía", qty: 3, unit: "cdas"}, {ing: "nueces", qty: 30, unit: "g"}], instrucciones: "Hidratar chía 8hs. Decorar con nueces activadas." },
-    "Yogur con Mix de Semillas": { ingredients: [{ing: "yogur natural", qty: 200, unit: "g"}, {ing: "mix semillas", qty: 2, unit: "cdas"}], instrucciones: "Mezclar yogur (sin azúcar) con semillas de sésamo y zapallo." }
+    "Pancakes de Banana y Coco": { 
+        ingredients: [{ing: "huevo", qty: 2, unit: "u"}, {ing: "banana", qty: 1, unit: "u"}, {ing: "coco", qty: 2, unit: "cdas"}], 
+        instrucciones: "1. Pisar bien la banana. 2. Batir con los huevos y el coco. 3. Cocinar en sartén antiadherente a fuego mínimo hasta que burbujee, dar vuelta." 
+    },
+    "Chiapudding con Nueces": { 
+        ingredients: [{ing: "chía", qty: 3, unit: "cdas"}, {ing: "leche coco", qty: 200, unit: "ml"}, {ing: "nueces", qty: 30, unit: "g"}], 
+        instrucciones: "1. Mezclar chía y leche de coco en un frasco. 2. Batir bien y dejar en heladera mínimo 4h (ideal toda la noche). 3. Sumar nueces picadas antes de comer." 
+    }
 };
+
+// --- BUSCADOR INTELIGENTE ---
+function buscarRecetaPorIngrediente() {
+    const input = document.getElementById("inventory-input").value.toLowerCase();
+    const res = document.getElementById("search-result");
+    
+    if(!input) return;
+
+    // Lógica de sugerencias variadas
+    let sugerencias = `
+        <div class="search-suggestions">
+            <p><strong>Basado en lo que tenés, te sugiero estas 3 variantes:</strong></p>
+            <div class="option">
+                <p><strong>1. Opción Caliente (Cuchara):</strong> Herví el <strong>${input}</strong> con zapallo y jengibre. Al final, procesalo para hacer una crema nutritiva y sumale un puñado de semillas de sésamo.</p>
+            </div>
+            <div class="option">
+                <p><strong>2. Opción Seca (Horno/Sartén):</strong> Mezclá <strong>${input}</strong> con 2 huevos y lino molido. Hacé pequeñas hamburguesas y doralas 5 min de cada lado. Quedan crocantes sin usar pan rallado.</p>
+            </div>
+            <div class="option">
+                <p><strong>3. Opción Proteica:</strong> Sellá <strong>${input}</strong> con aceite de coco y pimienta. Acompañalo con una ensalada de hojas verdes y almendras troceadas para la saciedad.</p>
+            </div>
+            <button onclick="aplicarHoyPersonalizado('${input}')" class="btn-primary" style="margin-top:10px;">🍽️ Aplicar ingrediente al menú de hoy</button>
+        </div>
+    `;
+    
+    res.innerHTML = sugerencias;
+    res.style.display = "block";
+}
+
+function aplicarHoyPersonalizado(ing) {
+    const hoy = days[(new Date().getDay() + 6) % 7];
+    menu[hoy].cena = `Plato especial con ${ing}`;
+    menu[hoy].ingredients = [{ing: ing, qty: 200, unit: "g"}, {ing: "Mix Semillas", qty: 30, unit: "g"}];
+    saveAndRender();
+    alert(`¡Listo! Agregué ${ing} a tu cena de hoy.`);
+}
 
 function generateSmartMenu() {
     const mult = document.getElementById("servings-selector").value / 2;
@@ -39,8 +88,7 @@ function generateSmartMenu() {
     days.forEach(day => {
         if (poolCenas.length === 0) poolCenas = [...Object.keys(RECETAS_BASE), ...recetasExternas.map(r => r.nombre)];
         const cenaNombre = poolCenas.splice(Math.floor(Math.random() * poolCenas.length), 1)[0];
-        const desNombres = Object.keys(DESAYUNOS_EXPERT);
-        const desElegido = desNombres[Math.floor(Math.random() * desNombres.length)];
+        const desElegido = Object.keys(DESAYUNOS_EXPERT)[Math.floor(Math.random() * 2)];
         
         let dCena = RECETAS_BASE[cenaNombre] || recetasExternas.find(r => r.nombre === cenaNombre);
         let dDesayuno = DESAYUNOS_EXPERT[desElegido];
@@ -57,6 +105,28 @@ function generateSmartMenu() {
         };
     });
     saveAndRender();
+}
+
+function generateShoppingList() {
+    let list = {};
+    Object.values(menu).forEach(day => {
+        if (day.ingredients) {
+            day.ingredients.forEach(i => {
+                let nombre = i.ing.toLowerCase().trim();
+                if (!list[nombre]) list[nombre] = {q: 0, u: i.unit};
+                list[nombre].q += i.qty;
+            });
+        }
+    });
+
+    const container = document.getElementById("shopping-list");
+    if (Object.keys(list).length === 0) {
+        container.innerHTML = "<li>No hay ingredientes. Generá un menú primero.</li>";
+    } else {
+        container.innerHTML = Object.entries(list)
+            .map(([n, d]) => `<li><input type="checkbox"> ${Math.ceil(d.q)}${d.u} ${n}</li>`)
+            .join("");
+    }
 }
 
 function saveAndRender() {
@@ -81,27 +151,20 @@ function showRecipe(day) {
     const d = menu[day];
     if (!d) return;
     let desInfo = DESAYUNOS_EXPERT[d.desayuno];
-    let cenaHtml = d.isExternal ? `<a href="${d.url}" target="_blank" class="btn-link">📺 Ver Tutorial</a>` : `<p>${RECETAS_BASE[d.cena]?.instrucciones || 'Sin instrucciones.'}</p>`;
+    let cenaInfo = RECETAS_BASE[d.cena] || recetasExternas.find(r => r.nombre === d.cena);
+    
+    let cenaHtml = d.isExternal ? 
+        `<a href="${d.url}" target="_blank" class="btn-link">📺 Ver Video Tutorial</a>` : 
+        `<p><strong>Preparación:</strong><br>${cenaInfo?.instrucciones || 'Mezclar los ingredientes y cocinar a fuego medio.'}</p>`;
     
     document.getElementById("recipe-detail").innerHTML = `
-        <h3>☀️ Desayuno: ${d.desayuno}</h3>
+        <h2 style="color:var(--primary)">☀️ ${d.desayuno}</h2>
         <p>${desInfo ? desInfo.instrucciones : '-'}</p>
         <hr>
-        <h3>🌙 Cena: ${d.cena}</h3>
+        <h2 style="color:var(--primary)">🌙 ${d.cena}</h2>
         ${cenaHtml}
     `;
     document.getElementById("recipe-modal").style.display = "flex";
-}
-
-function generateShoppingList() {
-    let list = {};
-    Object.values(menu).forEach(day => {
-        day.ingredients?.forEach(i => {
-            if (!list[i.ing]) list[i.ing] = {q: 0, u: i.unit};
-            list[i.ing].q += i.qty;
-        });
-    });
-    document.getElementById("shopping-list").innerHTML = Object.entries(list).map(([n, d]) => `<li><input type="checkbox"> ${Math.ceil(d.q)}${d.u} ${n}</li>`).join("");
 }
 
 function saveExternalRecipe() {
@@ -111,12 +174,18 @@ function saveExternalRecipe() {
     if(n && u) {
         let ingredientes = [];
         rawIng.split("\n").forEach(linea => {
-            if(linea.trim()) ingredientes.push({qty: 1, unit: "u", ing: linea.trim()});
+            if(linea.trim()) {
+                const parts = linea.match(/(\d+)?\s*(\w+)?\s*(.*)/);
+                ingredientes.push({
+                    qty: parseInt(parts[1]) || 1,
+                    unit: parts[2] || "u",
+                    ing: parts[3] || linea.trim()
+                });
+            }
         });
         recetasExternas.push({nombre: n, url: u, isExternal: true, ingredients: ingredientes});
         saveAndRender();
-        document.getElementById("ext-name").value = ""; document.getElementById("ext-url").value = ""; document.getElementById("ext-ingredients").value = "";
-        alert("¡Receta guardada!");
+        alert("¡Receta detallada guardada!");
     }
 }
 
@@ -130,8 +199,8 @@ function openLibrary() {
 function showLibraryRecipe(n) { 
     closeModal('library-modal'); 
     let d = RECETAS_BASE[n] || recetasExternas.find(r => r.nombre === n);
-    let html = `<h3>${n}</h3>${d.isExternal ? `<a href="${d.url}" target="_blank" class="btn-link">📺 Ver Video</a>` : `<p>${d.instrucciones}</p>`}`;
-    html += `<button onclick="aplicarHoy('${n}')" style="margin-top:20px; background:var(--primary); color:white;">🍽️ Usar Hoy</button>`;
+    let html = `<h2>${n}</h2>${d.isExternal ? `<a href="${d.url}" target="_blank" class="btn-link">📺 Ver Video</a>` : `<p>${d.instrucciones}</p>`}`;
+    html += `<button onclick="aplicarHoy('${n}')" class="btn-primary" style="margin-top:20px;">🍽️ Usar esta receta hoy</button>`;
     document.getElementById("recipe-detail").innerHTML = html;
     document.getElementById("recipe-modal").style.display = "flex"; 
 }
